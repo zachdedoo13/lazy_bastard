@@ -4,7 +4,6 @@ use lazy_bastard::{lazy_bastard};
 fn main() {
    let t = MyStruct::default();
 
-
    println!("{t:?}");
 }
 
@@ -20,9 +19,7 @@ lazy_bastard!(
 
       long: f32 => {
          let c: f32 = 1.2;
-
          let v = c.abs().sin().sin().sqrt();
-
          0.1 * v
       }
    }
