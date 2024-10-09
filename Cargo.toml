@@ -1,6 +1,6 @@
 [package]
 name = "lazy_bastard"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "A macro because writeing a seperate Default function is too much effort + anything else i add later"
 license = "MIT"
