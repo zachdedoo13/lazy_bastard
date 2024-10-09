@@ -60,3 +60,47 @@ macro_rules! lazy_bastard {
         Default::default()
     };
 }
+
+
+
+/// an internal macro for other functions, returns input code without creating an inner scope
+/// ```
+/// use lazy_bastard::code_in_scope;
+///
+/// code_in_scope!(let mut v = 5);
+/// v += 1;
+///
+/// // compiles to
+/// let mut v = 5;
+/// v += 1;
+///
+/// // instead of if using $x: block
+/// { let mut v = 5; };
+/// v += 1; // fails to compile
+///
+///
+/// ```
+#[macro_export]
+macro_rules! code_in_scope {
+    ($($code: tt)* ) => {
+        $($code)*
+    };
+}
+
+
+/// times a section of code printing the elapsed time, takes an optional name before the code
+#[macro_export]
+macro_rules! time_section_print {
+    ($($name: literal, )? {$($code: tt)*}) => {
+        let st_macro_inner_veriable = std::time::Instant::now();
+        lazy_bastard::code_in_scope!($($code)*);
+        println!("{} => {:?}", time_section_print!(@default $($name)? ), st_macro_inner_veriable.elapsed());
+    };
+
+    (@default $def:literal) => {
+        $def
+    };
+    (@default) => {
+        "Time duration"
+    };
+}

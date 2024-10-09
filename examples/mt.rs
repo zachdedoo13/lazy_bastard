@@ -1,8 +1,14 @@
 use std::marker::PhantomData;
-use lazy_bastard::{lazy_bastard};
+use lazy_bastard::{lazy_bastard, time_section_print};
 
 fn main() {
    let t = MyStruct::default();
+
+   time_section_print!("Section", {
+      let mut c = 87;
+   });
+
+   c += 1;
 
    println!("{t:?}");
 }
