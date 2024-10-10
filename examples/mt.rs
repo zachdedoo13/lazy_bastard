@@ -15,7 +15,7 @@ fn main() {
 
 lazy_bastard!(
    #[derive(Clone, Debug)]
-   pub struct MyStruct<'a> {
+   pub struct MyStruct {
       normal: i32 => 100_324,
       function_call: String => "test".into(),
       automatic: f64, // uses Default::default() instead
