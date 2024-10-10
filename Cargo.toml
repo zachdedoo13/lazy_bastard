@@ -1,7 +1,7 @@
 [package]
 name = "lazy_bastard"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
-description = "A macro because writeing a seperate Default function is too much effort + anything else i add later"
+description = "A helpfull macro because writeing a seperate Default function is too much effort"
 license = "MIT"
 repository = "https://github.com/zachdedoo13/lazy_bastard"
