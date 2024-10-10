@@ -4,7 +4,7 @@ makes creating simple structs that don’t need a constructor like settings stru
 
 somewhat second guessing the name, but it’s too late to change it
 
-
+```
     use lazy_bastard::lazy_bastard;
 
     lazy_bastard!(
@@ -50,3 +50,5 @@ somewhat second guessing the name, but it’s too late to change it
           }
        }
     }
+
+```
