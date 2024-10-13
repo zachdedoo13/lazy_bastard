@@ -82,7 +82,7 @@ macro_rules! lazy_bastard {
         $name:ident
         $(<$life: lifetime>)?
 
-        { $($field_name:ident : $field_type:ty $(=> $def: expr)? ),* $(,)? }
+        { $($field_vis:vis $field_name:ident : $field_type:ty $(=> $def: expr)? ),* $(,)? }
     ) => {
         
         $(
@@ -91,7 +91,7 @@ macro_rules! lazy_bastard {
         
         $vis struct $name $(<$life>)? {
             $(
-                $field_name: $field_type,
+                $field_vis $field_name: $field_type,
             )*
         }
         
