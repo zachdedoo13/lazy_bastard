@@ -9,6 +9,8 @@ fn main() {
 
    c += 1;
 
+   println!("{c}");
+
    println!("{t:?}");
 }
 
@@ -26,5 +28,12 @@ lazy_bastard!(
          let v = c.abs().sin().sin().sqrt();
          0.1 * v
       }
+   }
+);
+
+lazy_bastard!(
+   pub struct TT {
+      one: i32 = 0,
+      two: i32 = 0,
    }
 );
