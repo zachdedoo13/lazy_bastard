@@ -1,9 +1,9 @@
-use lazy_bastard::{lazy_bastard, time_section_print};
+use lazy_bastard::{lazy_bastard, timer};
 
 fn main() {
    let t = MyStruct::default();
 
-   time_section_print!("Section", {
+   timer!(Section, PRINT, {
       let mut c = 87;
    });
 

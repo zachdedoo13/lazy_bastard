@@ -53,151 +53,62 @@
 //!
 //! ```
 
-/// inline defaults for struct definitions if your lazy
-/// ```
-/// use lazy_bastard::lazy_bastard;
-///
-/// lazy_bastard!(
-///    #[derive(Clone, Debug)]
-///    pub struct MyStruct<'a> {
-///       field1: i32 => 100_324,
-///       field2: String => { "test".into() },
-///       field3: f64,
-///
-///       long: f32 => {
-///          let c: f32 = 1.2;
-///          let v = c.abs().sin().sin().sqrt();
-///          0.1 * v
-///       }
-///    }
-/// );
-/// ```
-#[macro_export]
-macro_rules! lazy_bastard {
-    (
-        $(#[$meta: meta])*
-
-        $vis:vis
-        struct
-        $name:ident
-        $(<$life: lifetime>)?
-
-        { $($field_vis:vis $field_name:ident : $field_type:ty $(=> $def: expr)? ),* $(,)? }
-
-        $($suffix: tt)*
-    ) => {
-
-        $(
-            #[$meta]
-        )*
-
-        $vis struct $name $(<$life>)? {
-            $(
-                $field_vis $field_name: $field_type,
-            )*
-        }
-
-        impl $(<$life>)? Default for $name $(<$life>)? {
-            fn default() -> Self {
-                Self {
-                    $(
-                        $field_name: lazy_bastard!(@default $($def)?),
-                    )*
-                }
-            }
-        }
-
-        lazy_bastard::code_in_scope!($($suffix)*);
-    };
+pub mod macros;
+pub use timers::*;
+pub use globals::*;
 
 
-    // dupe for = exactly the same but the 'only' way to accept both => and =
-    (
-        $(#[$meta: meta])*
+pub mod timers {
+   use std::fmt::{Display, Formatter};
+   use std::time::{Duration, Instant};
 
-        $vis:vis
-        struct
-        $name:ident
-        $(<$life: lifetime>)?
+   #[derive(Debug, Clone, Copy)]
+   pub struct CurrentTimer {
+      pub st: Instant,
+      pub name: &'static str
+   }
 
-        { $($field_vis:vis $field_name:ident : $field_type:ty $(= $def: expr)? ),* $(,)? }
+   #[derive(Debug, Clone, Copy)]
+   pub struct TimedSection {
+      pub elapsed: Duration,
+      pub name: &'static str,
+   }
 
-        $($suffix: tt)*
-    ) => {
+   impl Display for TimedSection {
+      fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+         write!(f, "{} <{:?}>", self.name, self.elapsed)
+      }
+   }
 
-        $(
-            #[$meta]
-        )*
+   pub fn start_timer(name: &'static str) -> CurrentTimer {
+      CurrentTimer {
+         st: Instant::now(),
+         name,
+      }
+   }
 
-        $vis struct $name $(<$life>)? {
-            $(
-                $field_vis $field_name: $field_type,
-            )*
-        }
-
-        impl $(<$life>)? Default for $name $(<$life>)? {
-            fn default() -> Self {
-                Self {
-                    $(
-                        $field_name: lazy_bastard!(@default $($def)?),
-                    )*
-                }
-            }
-        }
-
-        lazy_bastard::code_in_scope!($($suffix)*);
-    };
-
-
-
-    (@default $def:expr) => {
-        $def
-    };
-    (@default) => {
-        Default::default()
-    };
+   pub fn end_timer(current_timer: CurrentTimer) -> TimedSection {
+      TimedSection {
+         elapsed: current_timer.st.elapsed(),
+         name: current_timer.name,
+      }
+   }
 }
 
+pub mod globals {
+   use std::sync::{Arc, RwLock, RwLockReadGuard, RwLockWriteGuard};
 
+   pub fn safe_get_mut<T, F>(name: &'static Arc<RwLock<T>>, code: F)
+   where
+       F: FnOnce(RwLockWriteGuard<'static, T>),
+   {
+      code(name.write().unwrap());
+   }
 
-/// an internal macro for other functions, returns input code without creating an inner scope
-/// ```
-/// use lazy_bastard::code_in_scope;
-///
-/// code_in_scope!(let mut v = 5);
-/// v += 1;
-///
-/// // compiles to
-/// let mut v = 5;
-/// v += 1;
-///
-/// // instead of if using $x: block
-/// { let mut v = 5; };
-/// v += 1; // fails to compile
-///
-///
-/// ```
-#[macro_export]
-macro_rules! code_in_scope {
-    ($($code: tt)* ) => {
-        $($code)*
-    };
-}
-
-
-/// times a section of code printing the elapsed time, takes an optional name before the code
-#[macro_export]
-macro_rules! time_section_print {
-    ($($name: literal, )? {$($code: tt)*}) => {
-        let st_macro_inner_veriable = std::time::Instant::now();
-        lazy_bastard::code_in_scope!($($code)*);
-        println!("{} => {:?}", time_section_print!(@default $($name)? ), st_macro_inner_veriable.elapsed());
-    };
-
-    (@default $def:literal) => {
-        $def
-    };
-    (@default) => {
-        "Time duration"
-    };
+   pub fn safe_get_ref<T, F>(name: &'static Arc<RwLock<T>>, code: F)
+   where
+       F: FnOnce(RwLockReadGuard<'static, T>),
+   {
+      code(name.read().unwrap());
+   }
 }
