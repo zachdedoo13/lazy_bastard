@@ -1,4 +1,3 @@
-use lazy_static::lazy_static;
 /// inline defaults for struct definitions if your lazy
 /// ```
 /// use lazy_bastard::lazy_bastard;

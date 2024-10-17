@@ -12,7 +12,6 @@ fn main() {
       safe_get_mut(&DATA, |mut d| {
          tfn(&mut d);
       });
-
    });
 
    one.join().unwrap();
