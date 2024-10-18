@@ -1,8 +1,6 @@
 #![deprecated]
 #![allow(dead_code)]
 
-use std::fs;
-use std::path::Path;
 use syn::{File, Item, parse_file};
 
 fn main() {

@@ -174,7 +174,8 @@ macro_rules! timer {
 
 /// ``Arc<RwLock<T>>``
 /// ```
-/// use lazy_bastard::{init_global_mut, safe_get_mut};
+/// use lazy_bastard::{init_global_mut};
+/// use lazy_bastard::globals::safe_get_mut;
 ///
 /// init_global_mut!(DATA: f32 => 0.0);
 ///
